@@ -1,0 +1,32 @@
+# Daily Summary Cron Jobs
+# 自动生成每日工作总结并发送
+
+jobs:
+  # 周一、周二、周四 21:00 (晚上9点)
+  - name: daily-summary-late
+    schedule: "0 21 * * 1,2,4"
+    timezone: "Asia/Shanghai"
+    enabled: true
+    action: send
+    target: "feishu"
+    message: |
+      📅 今日工作总结 ({{date}})
+      
+      正在读取今日工作日志...
+      
+  # 周三、周五 18:00 (晚上6点)
+  - name: daily-summary-early
+    schedule: "0 18 * * 3,5"
+    timezone: "Asia/Shanghai"
+    enabled: true
+    action: send
+    target: "feishu"
+    message: |
+      📅 今日工作总结 ({{date}})
+      
+      正在读取今日工作日志...
+      
+# 配置说明：
+# - 周一、周二、周四: 21:00 (较晚总结)
+# - 周三、周五: 18:00 (提前总结)
+# - 自动读取 memory/YYYY-MM-DD.md 生成总结
