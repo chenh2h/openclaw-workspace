@@ -1,5 +1,36 @@
-# HEARTBEAT.md
+# HEARTBEAT.md - 每日检查清单
 
-# Keep this file empty (or with only comments) to skip heartbeat API calls.
+## 🔔 待办提醒规则
 
-# Add tasks below when you want the agent to check something periodically.
+**每天早上 9:00 检查今日待办，如有则发送提醒。**
+
+提醒格式：
+```
+📅 今日待办 (YYYY-MM-DD)
+
+1. [待办内容]
+   来源: [原始消息]
+
+2. [待办内容]
+   来源: [原始消息]
+```
+
+## 📋 检查清单
+
+- [ ] 检查 memory/YYYY-MM-DD.md 中的今日待办
+- [ ] 检查 MEMORY.md 中的待跟进事项
+- [ ] 如有待办，发送提醒消息（带上来源）
+- [ ] 检查邮件/日历（可选）
+
+## 📝 示例提醒
+
+```
+📅 今日待办 (2026-03-03)
+
+1. 本地生活菜单上预发，回归其他店铺
+   来源: 添加明日待办，本地生活菜单上预发，回归其他店铺
+```
+
+---
+
+*上次检查: 2026-03-02*
