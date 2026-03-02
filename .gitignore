@@ -1,0 +1,38 @@
+# OpenClaw Workspace .gitignore
+
+# 敏感信息
+*.key
+*.secret
+.env
+credentials.json
+*.pem
+*.p12
+
+# 临时文件
+*.tmp
+*.log
+.DS_Store
+Thumbs.db
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 依赖
+node_modules/
+vendor/
+
+# 大文件
+*.mp4
+*.mov
+*.zip
+*.tar.gz
+*.rar
+
+# 系统文件
+.DS_Store
+.AppleDouble
+.LSOverride
