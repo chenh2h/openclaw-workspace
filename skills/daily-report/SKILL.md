@@ -6,16 +6,20 @@ allowed-tools: Bash(daily-record:*)
 
 # Daily Report Quick Record System
 
-快速日报记录系统，支持全天随时记录，21:00 自动生成并提交。
+**用户工作日报** - 记录您的工作成果，生成给领导看的日报。
 
-## Quick Commands
+> ⚠️ **注意区分**：
+> - **您的日报** → 记录您的工作 → 给领导看
+> - **我的日报** → 记录 AI 助手的工作 → 给您看
+
+## Quick Commands（记录您的工作）
 
 | Command | Icon | Meaning | Example |
 |---------|------|---------|---------|
-| `/done` | ✅ | 已完成 | `/done 完成了 API 对接` |
-| `/do` | 🔄 | 进行中 | `/do 正在写技术文档` |
-| `/plan` | 📋 | 明日计划 | `/plan 优化系统性能` |
-| `/block` | 🚧 | 阻塞问题 | `/block 权限申请未通过` |
+| `/done` | ✅ | 您已完成 | `/done 完成了用户模块开发` |
+| `/do` | 🔄 | 您正在进行 | `/do 正在写测试用例` |
+| `/plan` | 📋 | 您的明日计划 | `/plan 优化系统性能` |
+| `/block` | 🚧 | 您遇到的阻塞 | `/block 需要产品确认需求` |
 
 ## Usage
 
