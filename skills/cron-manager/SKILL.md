@@ -57,69 +57,99 @@ Manage macOS/Linux cron jobs with automatic path resolution, testing, and Heartb
 
 **Every cron task that needs AI-agent reporting MUST follow this pattern:**
 
+### Critical: Avoid Race Conditions
+
+**Problem**: Task runs at 10:00, Heartbeat checks at 10:00, but task takes 5 minutes
+
+**Solution**: Time offset + Status file
+
+```
+Cron Schedule        Heartbeat Check
+    10:00  ───────┐      10:05  ───────┐
+    (execute)     │      (detect)      │
+                  ▼                    ▼
+            Generate file      Read file + status
+                  │                    │
+                  └────────┬───────────┘
+                           │
+                    5-minute buffer
+```
+
 ### Step 1: Create the Task Script
 
 ```bash
 #!/bin/bash
 # task-name.sh
 
-# 1. 执行任务
+# 1. Mark as running (prevent race condition)
+echo '{"status": "running", "startedAt": "'$(date -Iseconds)'"}' \
+  > ~/.openclaw/task-status.json
+
+# 2. Execute task
 # ... 任务逻辑 ...
 
-# 2. 生成结果文件
+# 3. Generate result file
 echo "结果" > /path/to/result.txt
 
-# 3. 记录状态（供 Heartbeat 检查）
-echo '{"lastRun": "'$(date -Iseconds)'", "status": "success"}' \
-  > ~/.openclaw/heartbeat-state.json
+# 4. Mark as completed
+echo '{
+  "status": "completed",
+  "startedAt": "'$(date -Iseconds)'",
+  "completedAt": "'$(date -Iseconds)'",
+  "resultFile": "/path/to/result.txt"
+}' > ~/.openclaw/task-status.json
 ```
 
-### Step 2: Add to Crontab
+### Step 2: Schedule with Offset
 
 ```bash
+# Crontab: Task at :00, Heartbeat at :05
 0 10 * * * /Users/username/.openclaw/workspace/scripts/task-name.sh
 ```
 
 ### Step 3: Add Heartbeat Check Point
 
-在 `HEARTBEAT.md` 中添加：
+In `HEARTBEAT.md`:
 
 ```markdown
-## 📋 XX:00 [任务名称] 检查
+## 📋 10:05 [任务名称] 检查
 
-**触发条件**: Heartbeat 在 XX:00-XX+1:00 之间执行
+**检测窗口**: 10:05 - 10:30
 
-**检查清单**:
-- [ ] 检查 [结果文件] 是否存在
-- [ ] 检查文件时间戳是否为今日
-- [ ] 读取任务执行状态
+**检查逻辑**:
+1. 读取 `task-status.json`
+2. If status = "completed" → 立即汇报
+3. If status = "running" → 等待 2 分钟重试
+4. If no status file → 检查昨日文件作为 fallback
 
-**执行动作**:
-```
-[汇报内容模板]
-```
-
-**完成后操作**:
-- [ ] [后续操作1]
-- [ ] [后续操作2]
+**重试策略**:
+- 最多重试 3 次
+- 每次间隔 2 分钟
+- 超过 10:30 未检测到 → 发送异常警告
 ```
 
-### Step 4: Complete the Loop
+### Step 4: Heartbeat Detection Logic
 
-```
-Cron 定时触发
-    ↓
-脚本执行任务
-    ↓
-生成结果文件
-    ↓
-Heartbeat 检查发现
-    ↓
-AI 生成汇报
-    ↓
-发送消息给用户
-    ↓
-执行后续操作
+```javascript
+// Pseudocode for Heartbeat check
+function checkTask() {
+  const status = readStatusFile();
+  
+  if (status.status === 'completed') {
+    return generateReport(status);
+  }
+  
+  if (status.status === 'running') {
+    if (retryCount < 3) {
+      retryCount++;
+      setTimeout(checkTask, 2 * 60 * 1000); // 2分钟后重试
+      return null; // 暂不汇报
+    }
+  }
+  
+  // Timeout or error
+  return sendWarning('Task may have failed');
+}
 ```
 
 ---
