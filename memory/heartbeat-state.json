@@ -1,0 +1,32 @@
+{
+  "version": "1.0",
+  "lastChecks": {
+    "todo-reminder": null,
+    "openclaw-news": null,
+    "daily-summary": "2026-03-03T21:10:00"
+  },
+  "pendingReports": [],
+  "scheduledTasks": [
+    {
+      "name": "todo-reminder",
+      "schedule": "0 10 * * *",
+      "script": "scripts/todo-reminder.sh",
+      "checkTime": "10:00-11:00",
+      "status": "active"
+    },
+    {
+      "name": "openclaw-news",
+      "schedule": "0 12 * * *",
+      "script": "scripts/openclaw-tracker.sh",
+      "checkTime": "12:00-13:00",
+      "status": "active"
+    },
+    {
+      "name": "daily-summary",
+      "schedule": "0 21 * * *",
+      "script": "manual-check",
+      "checkTime": "21:00-22:00",
+      "status": "active"
+    }
+  ]
+}
