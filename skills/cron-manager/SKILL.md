@@ -1,34 +1,23 @@
-# Cron Manager Skill
+---
+name: cron-manager
+description: Manage macOS/Linux cron jobs with automatic path resolution and testing. Use when creating, fixing, or debugging scheduled tasks, especially on macOS where path and permission issues are common.
+---
 
-## 描述
-管理 macOS/Linux 定时任务的 Skill，解决常见 crontab 问题。
+# Cron Manager
 
-## 功能
+Manage macOS/Linux cron jobs with automatic path resolution and testing.
 
-### 1. 创建定时任务
+## When to Use
 
-自动处理：
-- 路径转换为绝对路径（解决 `~` 不认问题）
-- 权限设置
-- 测试验证
+- Creating new scheduled tasks
+- Fixing broken cron jobs
+- Testing cron job functionality
+- Converting ~ to absolute paths
+- Setting executable permissions
 
-### 2. 修复定时任务
+## Quick Start
 
-常见修复：
-- 路径问题（`~` → `/Users/xxx`）
-- 权限问题（+x 执行权限）
-- 服务状态（cron 是否运行）
-
-### 3. 测试验证
-
-创建后立即测试：
-- 添加测试任务（每分钟执行）
-- 等待 70 秒验证
-- 查看日志输出
-
-## 使用方法
-
-### 创建新任务
+### Create Task
 
 ```bash
 ./cron-manager.sh add \
@@ -38,7 +27,7 @@
   --test
 ```
 
-### 修复现有任务
+### Fix Existing Task
 
 ```bash
 ./cron-manager.sh fix \
@@ -47,48 +36,57 @@
   --check-service
 ```
 
-### 查看所有任务
+### List All Tasks
 
 ```bash
 ./cron-manager.sh list
 ```
 
-### 删除任务
+### Remove Task
 
 ```bash
 ./cron-manager.sh remove --name "task-name"
 ```
 
-## 最佳实践
+## Common Issues Fixed
 
-1. **始终使用绝对路径**
+| Issue | Solution |
+|-------|----------|
+| `~` not recognized | Auto-convert to `/Users/username` |
+| Missing execute permission | Auto `chmod +x` |
+| Cron not running | Check service status |
+| Path not found | Verify absolute paths |
+
+## Best Practices
+
+1. **Always use absolute paths**
    ```
    ❌ ~/.openclaw/script.sh
    ✅ /Users/username/.openclaw/script.sh
    ```
 
-2. **创建后立即测试**
-   - 使用 `--test` 参数
-   - 或手动添加每分钟测试任务
+2. **Test immediately after creation**
+   - Use `--test` flag
+   - Or add per-minute test job
 
-3. **检查日志**
-   - 输出重定向到日志文件
-   - 定期检查日志是否存在
+3. **Check logs**
+   - Redirect output to log file
+   - Review logs regularly
 
-4. **macOS 推荐使用 launchd**
-   - 比 cron 更可靠
-   - 支持开机启动
-   - 更好的日志管理
+4. **Prefer launchd on macOS**
+   - More reliable than cron
+   - Supports startup launch
+   - Better logging
 
-## 注意事项
+## macOS Notes
 
-- macOS 10.15+ 中 cron 可能受限
-- 用户级 cron 需要正确配置
-- 脚本必须有可执行权限
-- 环境变量可能与 shell 不同
+- macOS 10.15+ may restrict cron
+- User-level cron needs proper config
+- Scripts must have execute permission
+- Environment differs from shell
 
-## 依赖
+## Dependencies
 
 - bash
 - crontab (macOS/Linux)
-- launchctl (macOS 可选)
+- launchctl (macOS optional)

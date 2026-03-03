@@ -1,80 +1,73 @@
-# Todo Manager Skill
+---
+name: todo-manager
+description: Manage daily and persistent todos with automatic reminders. Use when the user needs to add, track, or complete todo items, set up daily reminders, or manage recurring tasks that need daily follow-up until completion.
+---
 
-## 描述
-管理待办事项的 Skill，用于添加、查看和完成待办。
+# Todo Manager
 
-## 使用方法
+Manage daily and persistent todos with automatic reminders.
 
-### 添加待办
+## When to Use
 
-当用户要求添加待办时：
+- Adding new todo items with deadlines
+- Setting up daily todo reminders (10:00 AM)
+- Managing persistent todos (daily reminders until completed)
+- Marking todos as complete
 
-1. **提取信息**：
-   - 待办内容
-   - 截止日期（默认为明天）
-   - 来源消息（引用/回复的消息内容）
+## Quick Start
 
-2. **更新文件**：
-   - `memory/YYYY-MM-DD.md` - 在对应日期添加待办
-   - `MEMORY.md` - 添加到待跟进事项表格
+### Add Daily Todo
 
-3. **提交并推送**：
-   - git add -A
-   - git commit -m "todo: [内容]"
-   - git push origin master
+Updates both daily memory file and MEMORY.md tracking table.
 
-### 提醒待办（Heartbeat）
+### Add Persistent Todo
 
-每天早上 10:00 检查：
+Adds to `memory/persistent-todos.md` for daily reminders until marked complete.
 
-1. **检查今日待办**：
-   - 读取 `memory/YYYY-MM-DD.md`
-   - 读取 `MEMORY.md` 中的待跟进事项
+### Complete Todo
 
-2. **发送提醒**：
-   ```
-   📅 今日待办 (YYYY-MM-DD)
-   
-   1. [待办内容]
-      来源: [引用的原始消息]
-   ```
+Marks as done and removes from active tracking.
 
-3. **清理已提醒待办**：
-   - 从 `MEMORY.md` 中删除
-   - 在 `memory/YYYY-MM-DD.md` 中标记 ✅ 已完成
-   - git commit & push
+## File Structure
 
-### 完成待办
+```
+memory/
+├── YYYY-MM-DD.md          # Daily todos
+├── persistent-todos.md    # Recurring todos
+└── MEMORY.md              # Summary table
+```
 
-当用户完成待办时：
+## Daily Format
 
-1. 在 `memory/YYYY-MM-DD.md` 中标记 ✅
-2. 从 `MEMORY.md` 中删除
-3. git commit & push
-
-## 文件格式
-
-### memory/YYYY-MM-DD.md
 ```markdown
 ## 📅 明日待办 (YYYY-MM-DD)
 
-- [ ] 待办内容
-  - **来源**: [引用的消息内容]
+- [ ] Todo content
+  - **来源**: [Original message]
   - **截止日期**: YYYY-MM-DD
 ```
 
-### MEMORY.md
-```markdown
-## 📋 待跟进事项
+## Persistent Format
 
-| 事项 | 截止日期 | 状态 | 来源消息 |
-|------|----------|------|----------|
-| 待办内容 | YYYY-MM-DD | ⏳ 待办 | [引用的消息] |
+```markdown
+## 📌 活跃待办
+
+- [ ] **Task name** (YYYY-MM-DD added)
+  - Detail 1
+  - Detail 2
+
+## ✅ 已完成
 ```
 
-## 规则
+## Rules
 
-1. **来源必须准确**：使用用户引用的消息作为来源
-2. **提醒后删除**：避免重复提醒
-3. **及时推送**：每次修改后立即 git push
-4. **验证推送**：git status 确认 "up to date"
+1. **Source must be accurate**: Use user's referenced message
+2. **Delete after reminder**: Avoid duplicate reminders
+3. **Push immediately**: Git commit & push after each change
+4. **Verify push**: Confirm `git status` shows "up to date"
+
+## Reminder Schedule
+
+- **Time**: Daily 10:00 AM (cron)
+- **Content**: Today's todos + active persistent todos
+- **Action**: Send Feishu message with @mention
